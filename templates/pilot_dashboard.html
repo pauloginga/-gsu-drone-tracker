@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Pilot Dashboard — GSU/CIS Drone Tracker{% endblock %}
+{% block content %}
+
+<div class="panel">
+    <h2>Log Mission Attendance</h2>
+    <form method="POST" action="{{ url_for('pilot_dashboard') }}">
+        <div class="form-row">
+            <div class="field">
+                <label for="mission_date">Mission Date</label>
+                <input type="date" id="mission_date" name="mission_date" value="{{ today }}" required>
+            </div>
+            <div class="field">
+                <label for="take_off_time">Take-off Time</label>
+                <input type="time" id="take_off_time" name="take_off_time" required>
+            </div>
+            <div class="field">
+                <label for="landing_time">Landing Time</label>
+                <input type="time" id="landing_time" name="landing_time" required>
+            </div>
+        </div>
+        <div class="field">
+            <label for="remarks">Flight Remarks</label>
+            <textarea id="remarks" name="remarks" rows="3" placeholder="Mission notes, observations, incidents..."></textarea>
+        </div>
+        <button type="submit">Log Attendance</button>
+    </form>
+</div>
+
+<div class="panel">
+    <h2>My Mission History</h2>
+    <div class="table-wrap">
+        {% if missions %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Take-off</th>
+                    <th>Landing</th>
+                    <th>Duration</th>
+                    <th>Remarks</th>
+                    <th>Supervisor Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in missions %}
+                <tr>
+                    <td>{{ m.mission_date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ m.take_off_time }}</td>
+                    <td>{{ m.landing_time }}</td>
+                    <td>{{ m.duration_display() }}</td>
+                    <td>{{ m.remarks or '—' }}</td>
+                    <td>{{ m.admin_remarks or '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty-state">No missions logged yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
