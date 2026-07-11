@@ -22,11 +22,14 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "change-this-secret-key")
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-    "DATABASE_URL", f"sqlite:///{os.path.join(basedir, 'drone_tracker.db')}"
-)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["ADMIN_SETUP_CODE"] = os.environ.get("ADMIN_SETUP_CODE", "20262027")
+
+_db_url = os.environ.get("DATABASE_URL", f"sqlite:///{os.path.join(basedir, 'drone_tracker.db')}")
+if _db_url.startswith("postgres://"):
+    # Render provides "postgres://" but SQLAlchemy 2.x requires "postgresql://"
+    _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = _db_url
 
 db = SQLAlchemy(app)
 
