@@ -374,6 +374,16 @@ def clear_attendance():
     flash("Attendance sheet cleared.", "success")
     return redirect(url_for("admin_dashboard"))
 
+@app.route("/debug/dbcheck")
+def debug_dbcheck():
+    uri = app.config["SQLALCHEMY_DATABASE_URI"]
+    engine = "postgresql" if uri.startswith("postgresql://") else "sqlite"
+    user_count = User.query.count()
+    return {
+        "database_engine": engine,
+        "using_env_database_url": bool(os.environ.get("DATABASE_URL")),
+        "total_users_in_db": user_count,
+    }
 
 @app.route("/admin/export_pdf")
 @login_required
