@@ -27,8 +27,9 @@ app.config["ADMIN_SETUP_CODE"] = os.environ.get("ADMIN_SETUP_CODE", "20262027")
 
 _db_url = os.environ.get("DATABASE_URL", f"sqlite:///{os.path.join(basedir, 'drone_tracker.db')}")
 if _db_url.startswith("postgres://"):
-    # Render provides "postgres://" but SQLAlchemy 2.x requires "postgresql://"
-    _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+    _db_url = _db_url.replace("postgres://", "postgresql+psycopg://", 1)
+elif _db_url.startswith("postgresql://"):
+    _db_url = _db_url.replace("postgresql://", "postgresql+psycopg://", 1)
 app.config["SQLALCHEMY_DATABASE_URI"] = _db_url
 
 db = SQLAlchemy(app)
