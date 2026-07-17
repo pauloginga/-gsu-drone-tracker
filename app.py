@@ -378,7 +378,7 @@ def clear_attendance():
 @app.route("/debug/dbcheck")
 def debug_dbcheck():
     uri = app.config["SQLALCHEMY_DATABASE_URI"]
-    engine = "postgresql" if uri.startswith("postgresql://") else "sqlite"
+    engine = "postgresql" if uri.startswith("postgresql") else "sqlite"
     user_count = User.query.count()
     return {
         "database_engine": engine,
